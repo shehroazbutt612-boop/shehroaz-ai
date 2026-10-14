@@ -2,40 +2,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SHEHROAZ AI</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #10152f, #284b9b);
-      color: white;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      text-align: center;
-    }
-    main { padding: 30px; }
-    h1 { font-size: 42px; }
-    p { font-size: 18px; }
-    button {
-      background: #63e6be;
-      border: 0;
-      padding: 12px 24px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHEHROAZ AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:white}
+header{padding:20px 7%;display:flex;justify-content:space-between;
+align-items:center;border-bottom:1px solid #29324b}
+.logo{font-size:25px;font-weight:bold;color:#7c9cff}
+button{cursor:pointer;border:0;border-radius:10px;padding:12px 18px;
+font-weight:bold;background:#718cff;color:white}
+button:hover{filter:brightness(1.15)}
+.hero{text-align:center;padding:75px 20px}
+.hero h1{font-size:clamp(38px,7vw,68px);margin:15px 0}
+.hero h1 span{color:#829aff}
+.hero p{color:#bac4df;line-height:1.8}
+.tag{color:#8fa5ff}
+.container{max-width:1100px;margin:auto;padding:20px}
+#dashboard{display:none}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;margin-top:25px}
+.card{background:#151d33;border:1px solid #293653;border-radius:16px;
+padding:25px;cursor:pointer;transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:#829aff}
+.emoji{font-size:35px}
+.card p,.muted{color:#b1bdd7;line-height:1.6}
+#workspace{display:none;margin-top:25px;background:#151d33;
+padding:22px;border-radius:16px}
+input,textarea{width:100%;padding:14px;border-radius:9px;
+border:1px solid #394563;background:#0c1325;color:white;
+margin:10px 0;font:inherit}
+textarea{min-height:110px;resize:vertical}
+.output{white-space:pre-wrap;overflow-wrap:anywhere;background:#0c1325;
+padding:15px;border-radius:10px;margin-top:15px;min-height:50px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.secondary{background:#293653}
+footer{text-align:center;color:#8290ad;padding:40px 15px}
+a{color:#a7b7ff}
+@media(max-width:500px){header{padding:16px}.hero{padding:50px 15px}}
+</style>
 </head>
 <body>
-  <main>
-    <h1>🤖 SHEHROAZ AI</h1>
-    <p>Welcome! Your AI journey starts here.</p>
-    <button onclick="alert('SHEHROAZ AI is ready!')">
-      Get Started
-    </button>
-  </main>
+<header>
+  <div class="logo">✦ SHEHROAZ AI</div>
+  <button onclick="showDashboard()">Open AI Tools</button>
+</header>
+
+<section class="hero" id="home">
+  <div class="tag">YOUR CREATIVE AI WORKSPACE</div>
+  <h1>Imagine it.<br><span>Create it.</span></h1>
+  <p>Chat, create, write and explore new ideas<br>
+  with your personal AI workspace.</p>
+  <button onclick="showDashboard()">Get Started →</button>
+</section>
+
+<main class="container" id="dashboard">
+  <h1>Welcome to SHEHROAZ AI ✨</h1>
+  <p class="muted">Choose a tool and start exploring.</p>
+
+  <div class="cards">
+    <div class="card" onclick="openTool('chat')">
+      <div class="emoji">💬</div><h2>AI Chat</h2>
+      <p>Ask questions and explore ideas with an AI assistant.</p>
+    </div>
+    <div class="card" onclick="openTool('image')">
+      <div class="emoji">🎨</div><h2>Image Generator</h2>
+      <p>Prepare prompts for unique AI-generated artwork.</p>
+    </div>
+    <div class="card" onclick="openTool('write')">
+      <div class="emoji">✍️</div><h2>Writing Assistant</h2>
+      <p>Plan stories, essays, captions and creative content.</p>
+    </div>
+    <div class="card" onclick="openTool('code')">
+      <div class="emoji">💻</div><h2>Coding Assistant</h2>
+      <p>Work on code, programming ideas and debugging.</p>
+    </div>
+    <div class="card" onclick="openTool('study')">
+      <div class="emoji">📚</div><h2>Study Helper</h2>
+      <p>Prepare study questions, notes and explanations.</p>
+    </div>
+    <div class="card" onclick="openTool('ideas')">
+      <div class="emoji">💡</div><h2>Idea Generator</h2>
+      <p>Explore business ideas, projects and new possibilities.</p>
+    </div>
+  </div>
+
+  <section id="workspace">
+    <button class="secondary" onclick="closeTool()">← Back to tools</button>
+    <h2 id="toolTitle">AI Chat</h2>
+    <p class="muted" id="toolDescription"></p>
+    <textarea id="prompt" placeholder="Type your question or describe your idea..."></textarea>
+    <div class="actions">
+      <button onclick="runTool()">Submit</button>
+      <button class="secondary" onclick="clearTool()">Clear</button>
+    </div>
+    <div id="output" class="output">Your result will appear here.</div>
+  </section>
+</main>
+
+<footer>© 2026 SHEHROAZ AI · Made for creativity</footer>
+
+<script>
+let currentTool = "chat";
+
+const tools = {
+  chat: {
+    title:"💬 AI Chat",
+    description:"Ask anything. Connect an AI API to receive real AI answers.",
+    placeholder:"Ask your question here..."
+  },
+  image: {
+    title:"🎨 Image Generator",
+    description:"Describe the image you want to create. An image-generation service is required to generate the actual image.",
+    placeholder:"Example: A beautiful futuristic city at sunset..."
+  },
+  write: {
+    title:"✍️ Writing Assistant",
+    description:"Describe what you want to write. An AI service is required for generated writing.",
+    placeholder:"Write a story, essay, caption or email about..."
+  },
+  code: {
+    title:"💻 Coding Assistant",
+    description:"Describe your programming task or paste code to review.",
+    placeholder:"Explain the code or programming problem..."
+  },
+  study: {
+    title:"📚 Study Helper",
+    description:"Enter a subject or question you want help studying.",
+    placeholder:"Example: Explain photosynthesis in simple words..."
+  },
+  ideas: {
+    title:"💡 Idea Generator",
+    description:"Describe your interests or project to explore new ideas.",
+    placeholder:"Example: Give me ideas for an online business..."
+  }
+};
+
+function showDashboard(){
+  document.getElementById("home").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  window.scrollTo(0,0);
+}
+
+function openTool(name){
+  currentTool=name;
+  const t=tools[name];
+  document.getElementById("workspace").style.display="block";
+  document.getElementById("toolTitle").textContent=t.title;
+  document.getElementById("toolDescription").textContent=t.description;
+  document.getElementById("prompt").placeholder=t.placeholder;
+  document.getElementById("prompt").value="";
+  document.getElementById("output").textContent="Your result will appear here.";
+  document.getElementById("workspace").scrollIntoView({behavior:"smooth"});
+}
+
+function closeTool(){
+  document.getElementById("workspace").style.display="none";
+}
+
+function clearTool(){
+  document.getElementById("prompt").value="";
+  document.getElementById("output").textContent="Your result will appear here.";
+}
+
+function runTool(){
+  const text=document.getElementById("prompt").value.trim();
+  const output=document.getElementById("output");
+  if(!text){
+    output.textContent="Please type something first.";
+    return;
+  }
+  if(currentTool==="image"){
+    output.textContent="Your image prompt is ready:\n\n"+text+
+      "\n\nTo generate an actual image, connect an image-generation API.";
+  }else{
+    output.textContent="Your request:\n\n"+text+
+      "\n\nThis tool's AI service is not connected yet. Connect the Gemini API through a secure backend to receive real AI-generated answers.";
+  }
+}
+</script>
 </body>
 </html>
