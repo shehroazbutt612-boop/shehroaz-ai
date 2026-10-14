@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.env
+.venv/
+shehroaz_ai.db
+uploads/*
+!uploads/.gitkeep
